@@ -76,7 +76,16 @@ sudo mysql_secure_installation
 
 ### 3.4 Install PHP and Extensions
 ```bash
-sudo apt install php8.1 php8.1-mysql php8.1-curl php8.1-json php8.1-mbstring php8.1-xml libapache2-mod-php8.1 -y
+# Add PHP repository (required for PHP 8.1+)
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update
+
+# Install PHP 8.1 and required extensions (php8.1-json is included by default)
+sudo apt install php8.1 php8.1-mysql php8.1-curl php8.1-mbstring php8.1-xml libapache2-mod-php8.1 -y
+
+# Verify PHP installation
+php -v
 ```
 
 ### 3.5 Install Python and Required Packages
@@ -95,11 +104,21 @@ sudo mysql -u root -p
 
 ```sql
 CREATE DATABASE complaint_management_system;
-CREATE USER 'complaint_app'@'localhost' IDENTIFIED BY 'your_secure_password_here';
+-- Password must meet policy: minimum 8 chars, uppercase, lowercase, numbers, special chars
+-- Example: ComplaintApp@2026 (replace with your own strong password)
+CREATE USER 'complaint_app'@'localhost' IDENTIFIED BY 'ComplaintApp@2026';
 GRANT ALL PRIVILEGES ON complaint_management_system.* TO 'complaint_app'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
+
+**Important:** Replace `ComplaintApp@2026` with your own strong password that includes:
+- At least 8 characters
+- Uppercase letters (A-Z)
+- Lowercase letters (a-z)
+- Numbers (0-9)
+- Special characters (!@#$%^&*)
+
 
 ### 4.2 Import Database Schema
 ```bash
