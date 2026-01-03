@@ -15,13 +15,13 @@ ini_set('session.cookie_secure', 0); // Set to 1 in production with HTTPS
 
 // Database Configuration
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
+define('DB_USER', 'complaint_app');
 define('DB_PASS', '');
 define('DB_NAME', 'complaint_management_system');
 
 // Application Configuration
 define('APP_NAME', 'Smart Complaint Management System');
-define('APP_URL', 'http://localhost/ComplaintManagementSystem');
+define('APP_URL', '');
 define('ADMIN_EMAIL', 'admin@complaint.com');
 
 // Security Configuration
