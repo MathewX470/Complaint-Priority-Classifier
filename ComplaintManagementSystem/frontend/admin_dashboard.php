@@ -45,18 +45,6 @@ $complaints = $complaintAPI->getAllComplaints($filters, $page);
             <!-- Sidebar -->
             <div class="col-md-2 sidebar p-3">
                 <h4 class="mb-4"><i class="bi bi-shield-check"></i> Admin</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link text-white active" href="admin_dashboard.php">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#complaintsSection">
-                            <i class="bi bi-list-task"></i> Manage Complaints
-                        </a>
-                    </li>
-                </ul>
                 <hr class="text-white">
                 <div class="mt-auto">
                     <p class="mb-1"><i class="bi bi-person-badge"></i> <?php echo htmlspecialchars($_SESSION['full_name']); ?></p>
