@@ -25,11 +25,57 @@ $complaints = $complaintAPI->getAllComplaints($filters, $page);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
+        body {
+            overflow-x: hidden;
+        }
+        
         .sidebar {
-            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
         }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-content {
+            padding: 1rem;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 1rem;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .mobile-header {
+            display: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
         .stat-card {
             border-left: 4px solid;
             transition: transform 0.2s;
@@ -37,25 +83,92 @@ $complaints = $complaintAPI->getAllComplaints($filters, $page);
         .stat-card:hover {
             transform: translateY(-5px);
         }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay.show {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .table-responsive {
+                font-size: 0.75rem;
+            }
+            
+            .btn-group-sm .btn {
+                padding: 0.25rem 0.4rem;
+                font-size: 0.75rem;
+            }
+            
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+            
+            .card-header h5 {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar p-3">
-                <h4 class="mb-4"><i class="bi bi-shield-check"></i> Admin</h4>
-                <hr class="text-white">
-                <div class="mt-auto">
-                    <p class="mb-1"><i class="bi bi-person-badge"></i> <?php echo htmlspecialchars($_SESSION['full_name']); ?></p>
-                    <a href="logout.php" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </a>
-                </div>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+        <h5 class="mb-0"><i class="bi bi-shield-check"></i> Admin Panel</h5>
+        <span></span>
+    </div>
+    
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4 class="mb-0"><i class="bi bi-shield-check"></i> Admin Panel</h4>
+        </div>
+        <div class="sidebar-content">
+            <hr class="text-white">
+            <div class="user-info">
+                <p class="mb-2"><i class="bi bi-person-badge"></i> <?php echo htmlspecialchars($_SESSION['full_name']); ?></p>
+                <a href="logout.php" class="btn btn-outline-light btn-sm w-100">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
             </div>
-            
-            <!-- Main Content -->
-            <div class="col-md-10 p-4">
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
                 <h2 class="mb-4">Admin Dashboard</h2>
                 
                 <div id="alertMessage"></div>
@@ -380,6 +493,14 @@ $complaints = $complaintAPI->getAllComplaints($filters, $page);
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>`;
+        }
+        
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
         }
     </script>
 </body>
