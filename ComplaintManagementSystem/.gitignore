@@ -1,6 +1,7 @@
 # Ignore sensitive files
 .env
 *.log
+AWS_EC2_DEPLOYMENT_GUIDE.md
 
 # Ignore ML model files (large)
 ml_model/*.pkl
