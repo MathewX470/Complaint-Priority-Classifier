@@ -227,12 +227,43 @@ class ComplaintAPI {
      */
     public function getComplaintDetails($complaintId) {
         try {
-            $stmt = $this->db->prepare("CALL GetComplaintLifecycle(?)");
+            // Get complaint details
+            $stmt = $this->db->prepare("
+                SELECT 
+                    c.complaint_id,
+                    c.complaint_text,
+                    c.priority,
+                    c.status,
+                    c.submitted_at,
+                    c.resolved_at,
+                    TIMESTAMPDIFF(HOUR, c.submitted_at, COALESCE(c.resolved_at, CURRENT_TIMESTAMP)) as hours_elapsed,
+                    u.full_name as user_name,
+                    u.email as user_email
+                FROM complaints c
+                JOIN users u ON c.user_id = u.user_id
+                WHERE c.complaint_id = ?
+            ");
             $stmt->execute([$complaintId]);
+            $details = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $details = $stmt->fetch();
-            $stmt->nextRowset();
-            $history = $stmt->fetchAll();
+            if (!$details) {
+                return ['success' => false, 'message' => 'Complaint not found'];
+            }
+            
+            // Get status history
+            $stmt = $this->db->prepare("
+                SELECT 
+                    old_status,
+                    new_status,
+                    changed_at,
+                    notes,
+                    (SELECT full_name FROM users WHERE user_id = changed_by) as changed_by_name
+                FROM complaint_status_history
+                WHERE complaint_id = ?
+                ORDER BY changed_at ASC
+            ");
+            $stmt->execute([$complaintId]);
+            $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             return [
                 'success' => true,
