@@ -1,26 +1,22 @@
 <?php
-require_once '../backend/config.php';
-require_once '../backend/complaint_api.php';
+require_once 'config.php';
+require_once 'complaint_api.php';
 
 header('Content-Type: application/json');
 
 if (!isLoggedIn()) {
-    jsonResponse(false, 'Unauthorized', null, 401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['id'])) {
-    jsonResponse(false, 'Invalid request', null, 400);
+    echo json_encode(['success' => false, 'message' => 'Invalid request']);
+    exit;
 }
 
 $complaintAPI = new ComplaintAPI();
 $result = $complaintAPI->getComplaintDetails($_GET['id']);
 
-if ($result['success']) {
-    jsonResponse(true, 'Details retrieved successfully', [
-        'details' => $result['details'],
-        'history' => $result['history']
-    ]);
-} else {
-    jsonResponse(false, $result['message'], null, 404);
-}
+echo json_encode($result);
+exit;
 ?>
